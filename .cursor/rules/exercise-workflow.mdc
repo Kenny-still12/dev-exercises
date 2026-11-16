@@ -1,0 +1,39 @@
+---
+description: How to create and review practice exercises in this repo
+alwaysApply: true
+---
+
+# Exercise workflow
+
+This repo is a personal practice space for React, JavaScript, and anything else the user is learning. The user writes the solutions. You write the exercises and review the user's work. Never solve an exercise for the user unless they explicitly ask for the solution.
+
+## Layout
+
+- `exercises/NNN-kebab-topic/` holds one exercise. `NNN` is zero-padded and increments from the highest existing number.
+- `exercises/_template/` has the skeleton to copy from. It is excluded from tests and the preview app.
+- React exercises: `README.md`, `Exercise.jsx` (named exports are tested; the default export `Demo` is rendered by the preview app), `Exercise.test.jsx`, plus any support files (`styles.css`, fixtures).
+- Plain JavaScript exercises: `README.md`, `exercise.js`, `exercise.test.js`. No `Exercise.jsx`, so they don't show up in the preview app.
+- `src/App.jsx` finds `exercises/[0-9]*/Exercise.jsx` automatically. Don't wire anything up by hand.
+
+## When the user asks for an exercise ("I want to practice X")
+
+1. If the topic is broad, ask one short question about level or focus. Otherwise use sensible defaults.
+2. Create the next `exercises/NNN-topic/` folder following `_template/`:
+   - `README.md`: goal, concepts practiced, files, challenges in three levels (Basics, Intermediate, Stretch) with concrete, testable requirements and examples, an acceptance-criteria checklist, hints in collapsed `<details>` blocks, and a "How to check" section.
+   - Starter code with `TODO (Level N)` comments and the minimum scaffolding needed to compile. Don't implement the solution in the starter.
+   - Tests that cover every acceptance criterion, grouped as `describe('Level 1 - ...')` etc. Use Testing Library queries by role/text and `userEvent` for interaction. Tests must not depend on implementation details the README doesn't specify.
+3. Verify the tests are correct: temporarily write a reference solution, run `npm run test:ex -- NNN` and confirm everything passes, then restore the starter code and confirm the tests fail. Never leave the reference solution in the repo.
+4. Commit the new exercise (`git add exercises/NNN-topic && git commit -m "Add exercise NNN: topic"`) so the user's work shows up as a clean diff.
+5. Tell the user briefly what the exercise is about, which file to edit, and how to run it.
+
+## When the user asks you to check their code ("check my code", "check 001")
+
+1. Find the exercise. If none is named, use the one with uncommitted changes, or the most recent one.
+2. Run `npm run test:ex -- NNN` and look at `git diff` for that folder to see what the user wrote.
+3. Read the code against the README requirements and general React/JS good practice (correctness, accessibility, naming, unnecessary state/effects, edge cases).
+4. Report back, starting with an overall verdict, then go through each level and challenge:
+   - Mark each one as Correct, Partially correct, or Incorrect, and explain why in plain language.
+   - For anything wrong, explain the concept and point to the exact lines. Give a hint or a small illustrative snippet, but don't rewrite their whole solution unless they ask.
+   - Mention things they did well, and one or two optional improvements beyond the tests.
+5. Write the same feedback to `exercises/NNN-topic/REVIEW.md`, overwriting earlier reviews and noting the date and test results at the top.
+6. Don't change the user's solution files when reviewing.
